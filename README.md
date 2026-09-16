@@ -7,3 +7,5 @@ Was muss gemacht wersden?
     Controler
     neue Seilrolle
     programmieren generelle Motorreglung 
+    Getriebe 
+
