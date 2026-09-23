@@ -9,4 +9,4 @@ Was muss gemacht wersden?
     programmieren generelle Motorreglung 
     Getriebe 
 
-<img width="1300" height="732" alt="image" src="https://imgur.com/a/jowa0Cs" />
+<img width="1300" height="732" alt="image" src="https://i.imgur.com/7GFirja.png" />
