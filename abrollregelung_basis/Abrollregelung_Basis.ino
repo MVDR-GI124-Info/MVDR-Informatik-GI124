@@ -1,6 +1,3 @@
-Hier ist der Code mit Kommentaren und einer Kurzanleitung am Anfang:
-
-```cpp
 /*
   ============================================================
   MOTORSTEUERUNG MIT ENCODER – KURZANLEITUNG
