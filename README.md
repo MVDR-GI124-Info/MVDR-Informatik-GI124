@@ -10,3 +10,7 @@ Was muss gemacht wersden?
     Getriebe 
 
 <img width="1300" height="732" alt="image" src="https://i.imgur.com/7GFirja.png" />
+
+<img width="1300" height="732" alt="image" src="https://i.imgur.com/nIzClzh.jpeg" />
+
+<img width="1300" height="732" alt="image" src="https://i.imgur.com/7GFirja.png" />
