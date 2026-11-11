@@ -2,10 +2,10 @@
 #include <math.h>
 
 // --- Pin-Belegung fuer 4 Taster ---
-const int pinUp    = A0;  // Y- (nach oben)
-const int pinDown  = A1;  // Y+ (nach unten)
-const int pinLeft  = A2;  // X- (nach links)
-const int pinRight = A3;  // X+ (nach rechts)
+const int pinUp    = A2;  // Y- (nach oben)
+const int pinDown  = A3;  // Y+ (nach unten)
+const int pinLeft  = A4;  // X- (nach links)
+const int pinRight = A5;  // X+ (nach rechts)
 
 // --- Geometrische Parameter ---
 const float W = 100.0;
