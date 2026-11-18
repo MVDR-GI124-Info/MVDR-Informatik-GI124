@@ -1,0 +1,79 @@
+// --- Taster (gegen GND, INPUT_PULLUP) ---
+const int pinRight = A2;   // rot
+const int pinLeft  = A3;   // gelb
+const int pinUp    = A4;   // blau
+const int pinDown  = A5;   // gruen
+
+// --- Motor-Shield ---
+const int dirA = 12, pwmA = 3,  brkA = 9;   // Motor 1 (links)
+const int dirB = 13, pwmB = 11, brkB = 8;   // Motor 2 (rechts)
+
+// --- Drehgeber ---
+const int encA1 = 21, encB1 = 22;
+const int encA2 = 19, encB2 = 20;
+volatile long ticks1 = 0, ticks2 = 0;
+
+// --- Einstellungen ---
+const int SPEED = 150;              // 0..255
+const bool INVERT1 = false;         // true, wenn Motor 1 falsch herum dreht
+const bool INVERT2 = false;         // true, wenn Motor 2 falsch herum dreht
+
+void onEncoder1() { if (digitalRead(encB1) == HIGH) ticks1++; else ticks1--; }
+void onEncoder2() { if (digitalRead(encB2) == HIGH) ticks2++; else ticks2--; }
+
+// cmd: +1 = Seil laenger, -1 = Seil kuerzer, 0 = Stopp
+void setMotor(int dirPin, int pwmPin, int brkPin, int cmd, bool invert) {
+  if (cmd == 0) {
+    analogWrite(pwmPin, 0);
+    digitalWrite(brkPin, HIGH);
+    return;
+  }
+  bool fwd = (cmd > 0) != invert;
+  digitalWrite(brkPin, LOW);
+  digitalWrite(dirPin, fwd ? HIGH : LOW);
+  analogWrite(pwmPin, SPEED);
+}
+
+void setup() {
+  Serial.begin(9600);
+  pinMode(pinUp, INPUT_PULLUP);   pinMode(pinDown, INPUT_PULLUP);
+  pinMode(pinLeft, INPUT_PULLUP); pinMode(pinRight, INPUT_PULLUP);
+
+  pinMode(dirA, OUTPUT); pinMode(pwmA, OUTPUT); pinMode(brkA, OUTPUT);
+  pinMode(dirB, OUTPUT); pinMode(pwmB, OUTPUT); pinMode(brkB, OUTPUT);
+
+  pinMode(encA1, INPUT_PULLUP); pinMode(encB1, INPUT_PULLUP);
+  pinMode(encA2, INPUT_PULLUP); pinMode(encB2, INPUT_PULLUP);
+  attachInterrupt(digitalPinToInterrupt(encA1), onEncoder1, RISING);
+  attachInterrupt(digitalPinToInterrupt(encA2), onEncoder2, RISING);
+
+  setMotor(dirA, pwmA, brkA, 0, INVERT1);
+  setMotor(dirB, pwmB, brkB, 0, INVERT2);
+  Serial.println("SkyCam: Motoren laufen nur solange ein Knopf gedrueckt ist");
+}
+
+void loop() {
+  int up    = (digitalRead(pinUp)    == LOW);
+  int down  = (digitalRead(pinDown)  == LOW);
+  int left  = (digitalRead(pinLeft)  == LOW);
+  int right = (digitalRead(pinRight) == LOW);
+
+  // Motor 1: rot/gelb, Motor 2: blau/gruen
+  int cmd1 = constrain(right - left, -1, 1);   // rot = laenger, gelb = kuerzer
+  int cmd2 = constrain(down  - up,   -1, 1);   // gruen = laenger, blau = kuerzer
+
+  setMotor(dirA, pwmA, brkA, cmd1, INVERT1);
+  setMotor(dirB, pwmB, brkB, cmd2, INVERT2);
+
+  static unsigned long last = 0;
+  if (millis() - last >= 300) {
+    last = millis();
+    noInterrupts(); long t1 = ticks1, t2 = ticks2; interrupts();
+    Serial.print("U:"); Serial.print(up);
+    Serial.print(" D:"); Serial.print(down);
+    Serial.print(" L:"); Serial.print(left);
+    Serial.print(" R:"); Serial.print(right);
+    Serial.print(" | M1:"); Serial.print(t1);
+    Serial.print(" M2:"); Serial.println(t2);
+  }
+}
